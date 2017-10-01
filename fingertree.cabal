@@ -34,7 +34,9 @@ Source-Repository head
 
 Library
   Build-Depends: base < 6
-  Extensions:   MultiParamTypeClasses
+  Default-Language: Haskell2010
+  Other-Extensions:
+                MultiParamTypeClasses
                 FunctionalDependencies
                 FlexibleInstances
                 UndecidableInstances
