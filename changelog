@@ -1,5 +1,14 @@
 -*-change-log-*-
 
+0.1.2.0 Ross Paterson <R.Paterson@city.ac.uk> Oct 2017
+	* Removed constraint on the type of null
+	* Added versions of fmap and traverse passing the measures of both sides
+	* Added new search function, a symmetrical generalization of split
+	* Added Eq, Ord and Show instances for IntervalMap and PriorityQueue
+	* Made low and high into separate functions
+	* Updated for Monoid, Foldable, Traversable in Prelude
+	* Made compatible with Semigroup/Monoid proposal
+
 0.1.1.0 Ross Paterson <R.Paterson@city.ac.uk> Jun 2015
 	* Added Safe for GHC >= 7.2
 	* Added AutoDeriveTypeable for GHC >= 7.10
