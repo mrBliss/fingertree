@@ -852,10 +852,10 @@ data SearchResult v a
         -- ^ A tree opened at a particular element: the prefix to the
         -- left, the element, and the suffix to the right.
     | OnLeft
-        -- ^ Position to the left of the sequence, indicating that the
+        -- ^ A position to the left of the sequence, indicating that the
         -- predicate is 'True' at both ends.
     | OnRight
-        -- ^ Position to the right of the sequence, indicating that the
+        -- ^ A position to the right of the sequence, indicating that the
         -- predicate is 'False' at both ends.
     | Nowhere
         -- ^ No position in the tree, returned if the predicate is 'True'
@@ -871,13 +871,17 @@ data SearchResult v a
 -- If the relation is 'False' at the leftmost split and 'True' at the
 -- rightmost split, i.e.
 --
--- * @not (p 'mempty' ('measure' t)) && p ('measure' t) 'mempty'@
+-- @not (p 'mempty' ('measure' t)) && p ('measure' t) 'mempty'@
 --
 -- then there must exist an element @x@ in the sequence such that @p@
 -- is 'False' for the split immediately before @x@ and 'True' for the
--- split just after it.  In this situation, @'search' p t@ returns such an
--- element @x@ and the pieces @l@ and @r@ of the sequence to its left and
--- right respectively.  That is, it returns @'Position' l x r@ such that
+-- split just after it:
+--
+-- <<images/search.svg>>
+--
+-- In this situation, @'search' p t@ returns such an element @x@ and the
+-- pieces @l@ and @r@ of the sequence to its left and right respectively.
+-- That is, it returns @'Position' l x r@ such that
 --
 -- * @l >< (x <| r) = t@
 --
