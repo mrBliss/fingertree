@@ -128,7 +128,7 @@ instance Functor (IntervalMap v) where
 instance Foldable (IntervalMap v) where
     foldMap f (IntervalMap t) = foldMap (foldMap f) t
 #if MIN_VERSION_base(4,8,0)
-    null (IntervalMap t) = Prelude.null t
+    null (IntervalMap t) = FT.null t
 #endif
 
 -- | Traverse the intervals in lexicographical order.
@@ -145,7 +145,7 @@ instance (Ord v, Ord a) => Ord (IntervalMap v a) where
 
 instance (Show v, Show a) => Show (IntervalMap v a) where
     showsPrec p (IntervalMap ns)
-      | Prelude.null ns = showString "empty"
+      | FT.null ns = showString "empty"
       | otherwise =
         showParen (p > 0) (showIntervals (toList ns))
       where

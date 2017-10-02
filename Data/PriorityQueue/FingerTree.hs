@@ -113,7 +113,7 @@ instance Ord k => Foldable (PQueue k) where
         Nothing -> mempty
         Just (v, q') -> f v `mappend` foldMap f q'
 #if MIN_VERSION_base(4,8,0)
-    null (PQueue q) = Prelude.null q
+    null (PQueue q) = FT.null q
 #endif
 
 #if MIN_VERSION_base(4,9,0)
@@ -210,7 +210,7 @@ minView q = fmap (snd *** id) (minViewWithKey q)
 --
 minViewWithKey :: Ord k => PQueue k v -> Maybe ((k, v), PQueue k v)
 minViewWithKey (PQueue q)
-  | Prelude.null q = Nothing
+  | FT.null q = Nothing
   | otherwise = Just ((k, v), case FT.viewl r of
     _ :< r' -> PQueue (l >< r')
     _ -> error "can't happen")
