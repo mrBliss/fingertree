@@ -1,5 +1,8 @@
 -*-change-log-*-
 
+0.1.2.1 Ross Paterson <R.Paterson@city.ac.uk> Oct 2017
+	* Fix for GHC <= 7.8
+
 0.1.2.0 Ross Paterson <R.Paterson@city.ac.uk> Oct 2017
 	* Removed constraint on the type of null
 	* Added versions of fmap and traverse passing the measures of both sides
