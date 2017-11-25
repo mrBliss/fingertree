@@ -39,7 +39,9 @@ module Data.IntervalMap.FingerTree (
     -- * Interval maps
     IntervalMap, empty, singleton, insert, union,
     -- * Searching
-    search, intersections, dominators
+    search, intersections, dominators,
+    -- * Extraction
+    bounds, leastView, splitAfter
     ) where
 
 import qualified Data.FingerTree as FT
@@ -112,7 +114,6 @@ i `intervalUnion` NoInterval  = i
 IntInterval _ hi1 `intervalUnion` IntInterval int2 hi2 =
     IntInterval int2 (max hi1 hi2)
 
-
 instance (Ord v) => Measured (IntInterval v) (Node v a) where
     measure (Node i _) = IntInterval i (high i)
 
@@ -176,7 +177,7 @@ empty = IntervalMap FT.empty
 singleton :: (Ord v) => Interval v -> a -> IntervalMap v a
 singleton i x = IntervalMap (FT.singleton (Node i x))
 
--- | /O(log n)/.  Insert an interval into a map.
+-- | /O(log n)/.  Insert an interval and associated value into a map.
 -- The map may contain duplicate intervals; the new entry will be inserted
 -- before any existing entries for the same interval.
 insert :: (Ord v) => Interval v -> a -> IntervalMap v a -> IntervalMap v a
@@ -231,6 +232,32 @@ inRange lo hi (IntervalMap t) = matches (FT.takeUntil (greater hi) t)
     matches xs  =  case FT.viewl (FT.dropUntil (atleast lo) xs) of
         EmptyL    ->  []
         Node i x :< xs'  ->  (i, x) : matches xs'
+
+-- | /O(1)/.  @'bounds' m@ returns @'Nothing'@ if @m@ is empty, and
+-- otherwise @'Just' i@, where @i@ is the smallest interval containing
+-- all the intervals in the map.
+bounds :: (Ord v) => IntervalMap v a -> Maybe (Interval v)
+bounds (IntervalMap t) = case measure t of
+    NoInterval -> Nothing
+    IntInterval (Interval lo _) hi -> Just (Interval lo hi)
+
+-- | /O(1)/.  @'leastView' m@ returns @'Nothing'@ if @m@ is empty, and
+-- otherwise @'Just' ((i, x), m')@, where @i@ is the least interval,
+-- @x@ is the associated value, and @m'@ is the rest of the map.
+leastView :: Ord v =>
+    IntervalMap v a -> Maybe ((Interval v, a), IntervalMap v a)
+leastView (IntervalMap t) = case FT.viewl t of
+    EmptyL -> Nothing
+    Node i a FT.:< t' -> Just ((i, a), IntervalMap t')
+
+-- | /O(log(min(i,n-i)))/.  @'splitAfter' k m@ returns a pair of submaps,
+-- one consisting of intervals whose lower bound is less than or equal
+-- to @k@, and the other of those whose lower bound is greater.
+splitAfter :: Ord v =>
+    v -> IntervalMap v a -> (IntervalMap v a, IntervalMap v a)
+splitAfter k (IntervalMap t) = (IntervalMap before, IntervalMap after)
+  where
+    (before, after) = FT.split (greater k) t
 
 atleast :: (Ord v) => v -> IntInterval v -> Bool
 atleast k (IntInterval _ hi) = k <= hi
