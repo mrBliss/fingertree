@@ -151,7 +151,8 @@ instance (Show v, Show a) => Show (IntervalMap v a) where
       where
         showIntervals [] = showString "empty"
         showIntervals (Node i x:ixs) =
-            showString "insert " . shows i . showChar ' ' . shows x .
+            showString "insert " . showsPrec 11 i .
+                showChar ' ' . showsPrec 11 x .
                 showString " $ " . showIntervals ixs
 
 #if MIN_VERSION_base(4,9,0)
