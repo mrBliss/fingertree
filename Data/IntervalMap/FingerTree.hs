@@ -239,7 +239,9 @@ inRange lo hi (IntervalMap t) = matches (FT.takeUntil (greater hi) t)
 bounds :: (Ord v) => IntervalMap v a -> Maybe (Interval v)
 bounds (IntervalMap t) = case measure t of
     NoInterval -> Nothing
-    IntInterval (Interval lo _) hi -> Just (Interval lo hi)
+    IntInterval _ hi -> case FT.viewl t of
+        EmptyL -> Nothing
+        Node (Interval lo _) _ FT.:< _ -> Just (Interval lo hi)
 
 -- | /O(1)/.  @'leastView' m@ returns @'Nothing'@ if @m@ is empty, and
 -- otherwise @'Just' ((i, x), m')@, where @i@ is the least interval,
