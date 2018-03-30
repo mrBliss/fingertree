@@ -254,6 +254,8 @@ inRange lo hi (IntervalMap t) = matches (FT.takeUntil (greater hi) t)
 -- | /O(1)/.  @'bounds' m@ returns @'Nothing'@ if @m@ is empty, and
 -- otherwise @'Just' i@, where @i@ is the smallest interval containing
 -- all the intervals in the map.
+--
+-- @since 0.1.3.0
 bounds :: (Ord v) => IntervalMap v a -> Maybe (Interval v)
 bounds (IntervalMap t) = case measure t of
     NoInterval -> Nothing
@@ -264,6 +266,8 @@ bounds (IntervalMap t) = case measure t of
 -- | /O(1)/.  @'leastView' m@ returns @'Nothing'@ if @m@ is empty, and
 -- otherwise @'Just' ((i, x), m')@, where @i@ is the least interval,
 -- @x@ is the associated value, and @m'@ is the rest of the map.
+--
+-- @since 0.1.3.0
 leastView :: Ord v =>
     IntervalMap v a -> Maybe ((Interval v, a), IntervalMap v a)
 leastView (IntervalMap t) = case FT.viewl t of
@@ -273,6 +277,8 @@ leastView (IntervalMap t) = case FT.viewl t of
 -- | /O(log(min(i,n-i)))/.  @'splitAfter' k m@ returns a pair of submaps,
 -- one consisting of intervals whose lower bound is less than or equal
 -- to @k@, and the other of those whose lower bound is greater.
+--
+-- @since 0.1.3.0
 splitAfter :: Ord v =>
     v -> IntervalMap v a -> (IntervalMap v a, IntervalMap v a)
 splitAfter k (IntervalMap t) = (IntervalMap before, IntervalMap after)

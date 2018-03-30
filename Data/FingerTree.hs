@@ -322,6 +322,8 @@ mapWPDigit f v (Four a b c d) = Four (f v a) (f va b) (f vab c) (f vabc d)
 -- | Map all elements of the tree with a function that also takes the
 -- measure of the prefix to the left and of the suffix to the right of
 -- the element.
+--
+-- @since 0.1.2.0
 fmapWithContext :: (Measured v1 a1, Measured v2 a2) =>
     (v1 -> a1 -> v1 -> a2) -> FingerTree v1 a1 -> FingerTree v2 a2
 fmapWithContext f t = mapWCTree f mempty t mempty
@@ -456,6 +458,8 @@ traverseWPDigit f v (Four a b c d) = Four <$> f v a <*> f va b <*> f vab c <*> f
 -- | Traverse the tree from left to right with a function that also
 -- takes the measure of the prefix to the left and the measure of the
 -- suffix to the right of the element.
+--
+-- @since 0.1.2.0
 traverseWithContext :: (Measured v1 a1, Measured v2 a2, Applicative f) =>
     (v1 -> a1 -> v1 -> f a2) -> FingerTree v1 a1 -> f (FingerTree v2 a2)
 traverseWithContext f t = traverseWCTree f mempty t mempty
@@ -876,6 +880,8 @@ addDigits4 m1 (Four a b c d) e f g h (Four i j k l) m2 =
 
 -- | A result of 'search', attempting to find a point where a predicate
 -- on splits of the sequence changes from 'False' to 'True'.
+--
+-- @since 0.1.2.0
 data SearchResult v a
     = Position (FingerTree v a) a (FingerTree v a)
         -- ^ A tree opened at a particular element: the prefix to the
@@ -924,6 +930,8 @@ data SearchResult v a
 --
 -- For predictable results, one should ensure that there is only one such
 -- point, i.e. that the predicate is /monotonic/ on @t@.
+--
+-- @since 0.1.2.0
 search :: (Measured v a) =>
     (v -> v -> Bool) -> FingerTree v a -> SearchResult v a
 search p t
