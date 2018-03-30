@@ -56,7 +56,7 @@ import Data.Foldable (Foldable(foldMap))
 import Data.Monoid
 import Data.Traversable (Traversable(traverse))
 #endif
-#if MIN_VERSION_base(4,9,0)
+#if (MIN_VERSION_base(4,9,0)) && !(MIN_VERSION_base(4,11,0))
 import Data.Semigroup
 #endif
 import Data.Foldable (toList)
