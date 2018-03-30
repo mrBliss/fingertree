@@ -1,5 +1,8 @@
 -*-change-log-*-
 
+0.1.4.1 Ross Paterson <R.Paterson@city.ac.uk> Mar 2018
+	* Disabled Generic instances for GHC <= 7.6
+
 0.1.4.0 Ross Paterson <R.Paterson@city.ac.uk> Mar 2018
 	* Added Generic instances
 
