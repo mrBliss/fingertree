@@ -1,8 +1,10 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 #if __GLASGOW_HASKELL__ >= 702
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE Safe #-}
+#endif
+#if __GLASGOW_HASKELL__ >= 706
+{-# LANGUAGE DeriveGeneric #-}
 #endif
 #if __GLASGOW_HASKELL__ >= 710
 {-# LANGUAGE AutoDeriveTypeable #-}
@@ -75,7 +77,7 @@ import Control.Arrow ((***))
 import Data.List (unfoldr)
 
 data Entry k v = Entry k v
-#if __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 706
     deriving (Generic)
 #endif
 
@@ -86,7 +88,7 @@ instance Foldable (Entry k) where
     foldMap f (Entry _ v) = f v
 
 data Prio k v = NoPrio | Prio k v
-#if __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 706
     deriving (Generic)
 #endif
 
@@ -113,7 +115,7 @@ instance Ord k => Measured (Prio k v) (Entry k v) where
 
 -- | Priority queues.
 newtype PQueue k v = PQueue (FingerTree (Prio k v) (Entry k v))
-#if __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 706
     deriving (Generic)
 #endif
 

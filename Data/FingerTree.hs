@@ -4,8 +4,10 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE UndecidableInstances #-}
 #if __GLASGOW_HASKELL__ >= 702
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE Safe #-}
+#endif
+#if __GLASGOW_HASKELL__ >= 706
+{-# LANGUAGE DeriveGeneric #-}
 #endif
 #if __GLASGOW_HASKELL__ >= 710
 {-# LANGUAGE AutoDeriveTypeable #-}
@@ -97,7 +99,7 @@ data ViewL s a
     = EmptyL        -- ^ empty sequence
     | a :< s a      -- ^ leftmost element and the rest of the sequence
     deriving (Eq, Ord, Show, Read
-#if __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 706
         , Generic
 #endif
         )
@@ -108,7 +110,7 @@ data ViewR s a
     | s a :> a      -- ^ the sequence minus the rightmost element,
                     -- and the rightmost element
     deriving (Eq, Ord, Show, Read
-#if __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 706
         , Generic
 #endif
         )
@@ -141,7 +143,7 @@ data Digit a
     | Three a a a
     | Four a a a a
     deriving (Show
-#if __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 706
         , Generic
 #endif
         )
@@ -169,7 +171,7 @@ instance (Measured v a) => Measured v (Digit a) where
 
 data Node v a = Node2 !v a a | Node3 !v a a a
     deriving (Show
-#if __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 706
         , Generic
 #endif
         )
@@ -209,11 +211,11 @@ data FingerTree v a
     | Deep !v !(Digit a) (FingerTree v (Node v a)) !(Digit a)
 #if TESTING
     deriving (Show
-#if __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 706
         , Generic
 #endif
         )
-#elif __GLASGOW_HASKELL__ >= 702
+#elif __GLASGOW_HASKELL__ >= 706
     deriving (Generic)
 #endif
 
@@ -897,7 +899,7 @@ data SearchResult v a
         -- at the left end and 'False' at the right end.  This will not
         -- occur if the predicate in monotonic on the tree.
     deriving (Eq, Ord, Show
-#if __GLASGOW_HASKELL__ >= 702
+#if __GLASGOW_HASKELL__ >= 706
         , Generic
 #endif
         )
