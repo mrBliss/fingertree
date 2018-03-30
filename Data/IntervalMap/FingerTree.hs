@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 #if __GLASGOW_HASKELL__ >= 702
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE Safe #-}
 #endif
 #if __GLASGOW_HASKELL__ >= 710
@@ -48,6 +49,9 @@ import qualified Data.FingerTree as FT
 import Data.FingerTree (FingerTree, Measured(..), ViewL(..), (<|), (><))
 
 import Prelude hiding (null)
+#if MIN_VERSION_base(4,6,0)
+import GHC.Generics
+#endif
 #if MIN_VERSION_base(4,8,0)
 import qualified Prelude (null)
 #else
@@ -68,7 +72,11 @@ import Data.Foldable (toList)
 -- | A closed interval.  The lower bound should be less than or equal
 -- to the upper bound.
 data Interval v = Interval v v -- ^ Lower and upper bounds of the interval.
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Ord, Show, Read
+#if __GLASGOW_HASKELL__ >= 702
+        , Generic
+#endif
+        )
 
 -- | Lower bound of the interval
 low :: Interval v -> v
@@ -83,7 +91,11 @@ point :: v -> Interval v
 point v = Interval v v
 
 data Node v a = Node (Interval v) a
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Ord, Show, Read
+#if __GLASGOW_HASKELL__ >= 702
+        , Generic
+#endif
+        )
 
 instance Functor (Node v) where
     fmap f (Node i x) = Node i (f x)
@@ -96,6 +108,9 @@ instance Traversable (Node v) where
 
 -- rightmost interval (including largest lower bound) and largest upper bound.
 data IntInterval v = NoInterval | IntInterval (Interval v) v
+#if __GLASGOW_HASKELL__ >= 702
+    deriving (Generic)
+#endif
 
 #if MIN_VERSION_base(4,9,0)
 instance Ord v => Semigroup (IntInterval v) where
@@ -120,6 +135,9 @@ instance (Ord v) => Measured (IntInterval v) (Node v a) where
 -- | Map of closed intervals, possibly with duplicates.
 newtype IntervalMap v a =
     IntervalMap (FingerTree (IntInterval v) (Node v a))
+#if __GLASGOW_HASKELL__ >= 702
+    deriving (Generic)
+#endif
 -- ordered lexicographically by interval
 
 instance Functor (IntervalMap v) where

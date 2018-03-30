@@ -1,6 +1,10 @@
 {-# LANGUAGE CPP #-}
-{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleInstances, UndecidableInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE UndecidableInstances #-}
 #if __GLASGOW_HASKELL__ >= 702
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE Safe #-}
 #endif
 #if __GLASGOW_HASKELL__ >= 710
@@ -69,6 +73,9 @@ module Data.FingerTree (
     ) where
 
 import Prelude hiding (null, reverse)
+#if MIN_VERSION_base(4,6,0)
+import GHC.Generics
+#endif
 #if MIN_VERSION_base(4,8,0)
 import qualified Prelude (null)
 #else
@@ -89,14 +96,22 @@ infixl 5 |>, :>
 data ViewL s a
     = EmptyL        -- ^ empty sequence
     | a :< s a      -- ^ leftmost element and the rest of the sequence
-    deriving (Eq, Ord, Show, Read)
+    deriving (Eq, Ord, Show, Read
+#if __GLASGOW_HASKELL__ >= 702
+        , Generic
+#endif
+        )
 
 -- | View of the right end of a sequence.
 data ViewR s a
     = EmptyR        -- ^ empty sequence
     | s a :> a      -- ^ the sequence minus the rightmost element,
                     -- and the rightmost element
-    deriving (Eq, Ord, Show, Read)
+    deriving (Eq, Ord, Show, Read
+#if __GLASGOW_HASKELL__ >= 702
+        , Generic
+#endif
+        )
 
 instance (Functor s) => Functor (ViewL s) where
     fmap _ EmptyL    = EmptyL
@@ -125,7 +140,11 @@ data Digit a
     | Two a a
     | Three a a a
     | Four a a a a
-    deriving Show
+    deriving (Show
+#if __GLASGOW_HASKELL__ >= 702
+        , Generic
+#endif
+        )
 
 instance Foldable Digit where
     foldMap f (One a) = f a
@@ -149,7 +168,11 @@ instance (Measured v a) => Measured v (Digit a) where
 ---------------------------
 
 data Node v a = Node2 !v a a | Node3 !v a a a
-    deriving Show
+    deriving (Show
+#if __GLASGOW_HASKELL__ >= 702
+        , Generic
+#endif
+        )
 
 instance Foldable (Node v) where
     foldMap f (Node2 _ a b) = f a `mappend` f b
@@ -185,7 +208,13 @@ data FingerTree v a
     | Single a
     | Deep !v !(Digit a) (FingerTree v (Node v a)) !(Digit a)
 #if TESTING
-    deriving Show
+    deriving (Show
+#if __GLASGOW_HASKELL__ >= 702
+        , Generic
+#endif
+        )
+#elif __GLASGOW_HASKELL__ >= 702
+    deriving (Generic)
 #endif
 
 deep ::  (Measured v a) =>
@@ -861,7 +890,11 @@ data SearchResult v a
         -- ^ No position in the tree, returned if the predicate is 'True'
         -- at the left end and 'False' at the right end.  This will not
         -- occur if the predicate in monotonic on the tree.
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Ord, Show
+#if __GLASGOW_HASKELL__ >= 702
+        , Generic
+#endif
+        )
 
 -- | /O(log(min(i,n-i)))/. Search a sequence for a point where a predicate
 -- on splits of the sequence changes from 'False' to 'True'.

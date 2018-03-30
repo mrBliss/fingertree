@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 #if __GLASGOW_HASKELL__ >= 702
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE Safe #-}
 #endif
 #if __GLASGOW_HASKELL__ >= 710
@@ -58,6 +59,9 @@ import qualified Data.FingerTree as FT
 import Data.FingerTree (FingerTree, (<|), (|>), (><), ViewL(..), Measured(..))
 
 import Prelude hiding (null)
+#if MIN_VERSION_base(4,6,0)
+import GHC.Generics
+#endif
 #if MIN_VERSION_base(4,8,0)
 import qualified Prelude (null)
 #else
@@ -71,6 +75,9 @@ import Control.Arrow ((***))
 import Data.List (unfoldr)
 
 data Entry k v = Entry k v
+#if __GLASGOW_HASKELL__ >= 702
+    deriving (Generic)
+#endif
 
 instance Functor (Entry k) where
     fmap f (Entry k v) = Entry k (f v)
@@ -79,6 +86,9 @@ instance Foldable (Entry k) where
     foldMap f (Entry _ v) = f v
 
 data Prio k v = NoPrio | Prio k v
+#if __GLASGOW_HASKELL__ >= 702
+    deriving (Generic)
+#endif
 
 #if MIN_VERSION_base(4,9,0)
 instance Ord k => Semigroup (Prio k v) where
@@ -103,6 +113,9 @@ instance Ord k => Measured (Prio k v) (Entry k v) where
 
 -- | Priority queues.
 newtype PQueue k v = PQueue (FingerTree (Prio k v) (Entry k v))
+#if __GLASGOW_HASKELL__ >= 702
+    deriving (Generic)
+#endif
 
 instance Ord k => Functor (PQueue k) where
     fmap f (PQueue xs) = PQueue (FT.fmap' (fmap f) xs)
