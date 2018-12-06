@@ -966,7 +966,7 @@ searchTree p vl (Deep _ pr m sf) vr
   | p vlpm vsr  =  let  Split ml xs mr  =  searchTree p vlp m vsr
                         Split l x r     =  searchNode p (vlp `mappend` measure ml) xs (measure mr `mappend` vsr)
                    in   Split (deepR pr  ml l) x (deepL r mr sf)
-  | otherwise   =  let  Split l x r     =  searchDigit p vm sf vr
+  | otherwise   =  let  Split l x r     =  searchDigit p (vlp `mappend` vm) sf vr
                    in   Split (deepR pr  m  l) x (maybe Empty digitToTree r)
   where
     vlp     =  vl `mappend` measure pr

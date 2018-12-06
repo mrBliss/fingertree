@@ -22,6 +22,7 @@ import Data.Foldable (Foldable(foldMap, foldl, foldr), toList, all)
 import Data.Functor ((<$>))
 import Data.Traversable (traverse)
 import Data.List (inits)
+import Data.Maybe (listToMaybe)
 import Data.Monoid (Monoid(..))
 
 main :: IO ()
@@ -40,6 +41,8 @@ main = defaultMainWithOpts
     , testProperty "null" prop_null
     , testProperty "viewl" prop_viewl
     , testProperty "viewr" prop_viewr
+    , testCase "search" test_search
+    , testProperty "search" prop_search
     , testProperty "split" prop_split
     , testProperty "takeUntil" prop_takeUntil
     , testProperty "dropUntil" prop_dropUntil
@@ -153,6 +156,35 @@ prop_viewr xs =
     case viewr xs of
     EmptyR ->   Prelude.null (toList xs)
     xs' :> x -> valid xs' && toList xs == toList xs' ++ [x]
+
+prop_search :: Int -> Seq A -> Bool
+prop_search n xs =
+    case search p xs of
+        Position _ b _ -> Just b == indexFromEnd n (toList xs)
+        OnLeft         -> n >= len || null xs
+        OnRight        -> n < 0
+        Nowhere        -> error "impossible: the predicate is monotonic"
+  where p vl vr = Prelude.length vl >= len - n && Prelude.length vr <= n
+
+        len = length xs
+
+        indexFromEnd :: Int -> [a] -> Maybe a
+        indexFromEnd i = listToMaybe . drop i . Prelude.reverse
+
+
+test_search :: Assertion
+test_search = do
+    lookupByIndexFromEnd xs1 1 @?= Just (A 4)
+    lookupByIndexFromEnd xs2 1 @?= Just (A 4)
+  where
+    xs1 = Deep (map A [1..5]) (Four (A 1) (A 2) (A 3) (A 4)) Empty (One (A 5))
+    xs2 = Deep (map A [1..5]) (One (A 1)) Empty (Four (A 2) (A 3) (A 4) (A 5))
+    lookupByIndexFromEnd xs n =
+        let len = length xs
+            p vl vr = Prelude.length vl >= len - n && Prelude.length vr <= n
+        in case search p xs of
+               Position _ x _ -> Just x
+               _              -> Nothing
 
 prop_split :: Int -> Seq A -> Bool
 prop_split n xs =
